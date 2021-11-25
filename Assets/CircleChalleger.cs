@@ -12,7 +12,9 @@ public class CircleChalleger : MonoBehaviour
     [SerializeField] private Transform straightTo;
     [SerializeField] private Transform straightFrom;
 
-    private Vector3 CriclePositionCenter => positionCircle.position;
+    private Vector3 CirclePositionCenter => positionCircle.position;
+    private Vector3 StartLine => straightFrom.position;
+    private Vector3 EndLine => straightTo.position;
     private float _delta;
 
     private void OnDrawGizmos()
@@ -25,19 +27,19 @@ public class CircleChalleger : MonoBehaviour
     private void DrawCircle()
     {
         Gizmos.color = Color.white;
-        Gizmos.DrawWireSphere(positionCircle.position, r);
+        Gizmos.DrawWireSphere(CirclePositionCenter, r);
     }
 
     private void DrawStraught()
     {
         Gizmos.color = _delta < 0 ? Color.white : Color.blue;
-        Gizmos.DrawLine(straightFrom.position, straightTo.position); 
+        Gizmos.DrawLine(StartLine, EndLine); 
     }
 
     private void DrawCrossStitch()
     {
-        MathUtils.StraightEquation(straightFrom.position, straightTo.position, out var m, out var c);
-        MathUtils.ValuesAbcToDelta(c, m, CriclePositionCenter, r, out var abcDelta);
+        MathUtils.StraightEquation(StartLine, EndLine, out var m, out var c);
+        MathUtils.ValuesAbcToDelta(c, m, CirclePositionCenter, r, out var abcDelta);
 
         _delta = MathUtils.Delta(abcDelta.A, abcDelta.B, abcDelta.C, out var x1, out var x2);
         if (_delta < 0)
@@ -53,8 +55,8 @@ public class CircleChalleger : MonoBehaviour
         
         Gizmos.color = Color.green;
 
-        var isPoint1Valid = MathUtils.IsPointInFiniteLine(straightFrom.position, straightTo.position, point1);
-        var isPoint2Valid = MathUtils.IsPointInFiniteLine(straightFrom.position, straightTo.position, point2);
+        var isPoint1Valid = MathUtils.IsPointInFiniteLine(StartLine, EndLine, point1);
+        var isPoint2Valid = MathUtils.IsPointInFiniteLine(StartLine, EndLine, point2);
 
         if (isPoint1Valid)
         {
